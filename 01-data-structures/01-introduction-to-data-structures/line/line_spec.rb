@@ -59,4 +59,11 @@ RSpec.describe Line, type: Class do
     end
   end
 
+  describe "#next" do
+    it "removes the first person from the line" do
+      line.next
+      expect(line.search("Hillary")).to be_nil
+    end
+  end
+
 end

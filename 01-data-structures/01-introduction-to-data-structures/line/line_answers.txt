@@ -1,9 +1,17 @@
 The assignment asks me to provide a written answer to support my design choices, but mostly I did not make any design choices.  The test file and the skeleton code dictated the majority of choices (TDD, yay).
 
-I did however add a next method because if people are waiting in line for something, then it is to be assumed that occasionally the first person in line will move from the line to participate in the activity he or she was waiting in line for.  This seems fundamentally different from leaving the line without participating in the event, so I added that functionality.
+I did however add a next method because if people are waiting in line for something, then it is to be assumed that occasionally the first person in line will move from the line to participate in the activity he or she was waiting in line for.  This seems fundamentally different from leaving the line without participating in the event, so I added that functionality.  I added a test for this method as well.
 
 Also, I would have implemented the middle function differently, in that I would have returned an array of the middle two people in the line if the line length was even.  I left it as is so it passed specs.
 
 I also would have returned a Boolean for search instead of returning the person if true and nil if false.  I feel a Boolean is the more natural reponse to an existence query.
 
 Also, the skeleton code has a private index method, which I presume is meant to return the array index of a given person in the members array.  In some languages, I presume this would be helpful for slicing the array when a random person leaves the line, but Ruby's delete method makes this trivial.
+
+The assignment requires answers to some specific questions:
+
+1.  The line data structure, which is a class, conforms to the parameters given.  It allows developers to insert a new person to the line.  All new entries are placed at the end of the array (or the back of the line).  It allows developers to send a message to the queue that a person has left the line and thus to delete that element from the array.  Developers have simple methods for retrieving the first, last or middle line members.  And the line can easily be searched for a specific person.  Lastly, I added a method to actually iterate the line, using first in, first out.
+
+2. Because, by its nature, a first in first out line is unsorted, any search must iterate through the line until the element is found or the line is exhausted.
+
+3. A great example of a real world first in, first out structure that is not a line of people is the process a food, or other perishable item (such as perscription drugs), vendor will use and/or distribute their products.  Typically the products will be used in the order that they arrived, but there will be times in which an item may have to be removed from the queue, so that matches this data structure well.  At first it would seem that each element in such a queue was non-unique, but the arrival time is the key component and would be how to differentiate between otherwise identical products.

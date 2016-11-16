@@ -1,0 +1,15 @@
+Once again the skeleton code and testing dictate the choices. Two comments of note:
+
+1.  There is not a require_relative "pixel" in the pixel_spec.rb file.  I do not know if this was intentional to make students trouble shoot or if it is an oversight.
+
+2.  Both the pixel class and the screen class require x and y coordinates.  This seems redundant in the pixel class and necessary in the screen class.  I can create a pixel, give it any old coordinates I want to give it and then assign it to any valid location in the matrix and it will be a valid pixel.  I could introduce code to validate that pixel x and y match screen x and y, but I do not see the point.  It seems enough to instantiate a pixel with a color, then place it anywhere in the screen matrix the developer wishes.
+
+1.  The screen class allows developers to place objects in a two dimensional matrix, which is assigned dimensions upon initialization.  The class validates that the position requested is a valid location in the instantiated matrix array.  It adds the further functionality that a developer can retrieve an element at a given location.  Because the data structure is meant to represent a graphics screen, there is no immediate apparent need to search the matrix for elements.
+
+The pixel class is a constructor that allows developers to instantiate pixels for use in the screen class.  It validates the rgb values and it also, for no apparent reason, specifies their location.  It stores no information beyond the values of the instance variables, for which it provides attr_accessor methods.
+
+2.  There is no method given for searching for a given element (pixel) stored in the @matrix 2D array.  If there were a search method, it would have to search over unsorted data because of the nature of the pixel placement.  Sorting the data by anything except given location would distort the image, though I suppose the class could keep two copies of the array, one for display and one sorted, if there were a need to search for assigned pixels.  There is however a method for retrieving the pixel at a given location.
+
+3.  The pixel class is very specific to its purpose.  I suppose with modification, it could represent any object that had three difining attributes and a location in two dimensional space, such as products in a grocery store with the location being the coordinates with respect to the floor plan, and the product's classification (meat, vegetable, etc.), specific name, and quantity as its defining attributes.
+
+The screen class could easily be renamed and used in any application that needed to organize data in a two dimensional array, such as a database table.  If the data in any such application could be sorted then a sub class could inherit from it and specify the most appropriate search methods.
