@@ -1,0 +1,9 @@
+The assignment asks me to provide a written answer to support my design choices, but mostly I did not make any design choices.  The test file and the skeleton code dictated the majority of choices (TDD, yay).
+
+I did however add a next method because if people are waiting in line for something, then it is to be assumed that occasionally the first person in line will move from the line to participate in the activity he or she was waiting in line for.  This seems fundamentally different from leaving the line without participating in the event, so I added that functionality.
+
+Also, I would have implemented the middle function differently, in that I would have returned an array of the middle two people in the line if the line length was even.  I left it as is so it passed specs.
+
+I also would have returned a Boolean for search instead of returning the person if true and nil if false.  I feel a Boolean is the more natural reponse to an existence query.
+
+Also, the skeleton code has a private index method, which I presume is meant to return the array index of a given person in the members array.  In some languages, I presume this would be helpful for slicing the array when a random person leaves the line, but Ruby's delete method makes this trivial.
