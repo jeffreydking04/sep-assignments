@@ -1,0 +1,13 @@
+I was confused at first by the way the assingment was worded.  It seemed that the instruction: "Keep a pointer to the TOP of the queue", along with the fact that self.top = nil was declared in the skeleton code, implied that self.top should be the pointer, so I wrote the code that way.
+
+My tests did not pass because self.top is not the pointer, it is the value the pointer is pointing at.  It took me a while to figure out that I was supposed to be implementing a stack that has a peek function.  Calling stack.top is actually "peeking" at the next value.
+
+I added @index as a pointer that contains the index at the top of the stack.  I defined empty? to be when @index = -1 and initialize @index to -1.
+
+I also struggled with the language in the note about the empty? method. The note says the method returns false if there are elements in the structure, but once elements have been added to a stack, they are not deleted.  The pointer is just moved.  The structure is considered empty when the pointer is moved below the start of the stack, but the elements are still there, (in memory in Assembly, in the array in our implementation), they are just no longer valid and the next push will overwrite them.
+
+I understand the intent of the note now.  It is referring to the structure the array is supposed to represent.  The values are still present (not deleted) in the array but the data the array is supposed to simulate considers that data gone.  The wording made me think I should be deleting the value from the array when it was "popped" off.
+
+I chose not to delete because there is no need to do so.  A stack's functionality stipulates that only two actions are really available (although we do add the "peek" functionality by storing the value at the top of the stack): we can add an element to the top of the stack or we can take an element off the top of the stack.  Once we pop an element off, even though it is still in the array, it is dead to us and the only way to reference that array position again is to overwrite it, so there is no need to delete it.
+
+The tests pass and I assume this at least similar to the kind of implementation the assignment desires.

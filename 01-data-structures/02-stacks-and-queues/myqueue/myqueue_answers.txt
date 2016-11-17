@@ -1,0 +1,27 @@
+Okay, this one is a little bizarre.  Why would we want the to add items to the end of the list yet have the end of the list be labeled the "head" of the list and the beginning of the list be the "tail"?  Made my brain hurt but I switched it.
+
+I set @head and @tail to nil on initialization and declared @head_pointer and @tail_pointer to refer to the end of the queue (most recetnly added, per the assignment) and the beginning of the queue, respectively.
+
+Because of the way pointers in a stack work, items that are dequeued are not deleted.  The pointer is just moved to next spot, or index in our case. Thus, if we add x number of elements to the queue, when we dequeue them all, they will neither be deleted, because that is not how a stack works, nor will the index be at 0.  It will be at some unknown x.
+
+So we cannot check to see if the queue is empty by checking if there are elements in the array, because there will be once we enqueue any (they are not deleted on dequeue), nor can we check to see if either pointer is a specific value, because the pointers (the indices) will be at x and x-1 (tail and head respectively), where x is the number of elements that were enqueued, when the queue becomes empty (more on why they will be x and x-1 later).
+
+But this gives us our solution for checking for an empty queue.  When the last item in the queue is dequeued, @tail_pointer will be 1 greater than @head_pointer.  If there are elements in the queue, @tail_pointer <= @head_pointer, so we simply return @tail_pointer > @head_pointer.  If true, the queue is empty.
+
+Thus I initialize @tail_pointer = 0 and @head_pointer = -1, because a MyQueue instance is initialized with an empty queue.
+
+In the enqueue method, I first check if the queue is empty.  If it is I set @tail to the element passed, because this is the start of a new queue and this element is first in line.
+
+It does not matter if the queue has been non-empty before.  Once it is empty again, I simply reset the pointers to their initial state and overwrite any data in the array.  It was dead once it was dequeued in any case.
+
+I increment the head pointer.  The queue array is assigned the passed element at the @head_pointer index and @head is assigned the passed element.
+
+In the dequeue method, I am doing no validations to make sure the queue has an item to be dequeued, so we are assuming that the user is only dequeing if there is an item to dequeue.  The @tail_pointer points at the beginning of the line (not the end, still makes my head hurt), so I set the temp variable to @tail (the value at the front of the queue).  Then I increment @tail_pointer so the next element is the element at the front of the line.
+
+But, if there was only one element in the queue on dequeue, then @tail_pointer and @head_pointer would have been set to the same index, specifically x-1 where x is the numbers of elements that have been added since the queue was last empty.  The @tail_pointer is now pointing at an index that does not contain an element, namely x.  Thus when the last element from a queue is dequeued, @tail_pointer will be greater than @head_pointer and the queue will, obviously, be empty.
+
+I check for this outcome and reset the pointers, @head, and @tail to their initialization values if empty.
+
+If the array is not empty on dequeue, then the @tail is set to the value the incremented tail pointer is now pointing at.  Temp is returned.
+
+And that is all she wrote.  All tests pass.
