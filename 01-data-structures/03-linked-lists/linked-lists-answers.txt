@@ -1,0 +1,44 @@
+1.  When a processor looks for a location in cache and suffers a cache miss, then it must look to the RAM to find the memory location.   When it finds the location, it loads not only that location into cache, but also a range of locations near that location.  This is Spatial Locality and, when looping over arrays, which are stored in consecutive blocks of memory, it leads to increased performance because more of the data the processor needs has been loaded into cache and fewer RAM lookups are needed.
+
+However, with linked lists, spacial locality is not benficial because the data for linked lists is not stored in consecutive blocks.  For exceptionally large data sets, this can improve performance because the processor does not need to arrange the physical memory space to make room for them, which is expensive with regards to performance.  Searching a large linked list is more expensive than searching an array because it requires more RAM lookups.
+
+Storing 1 to 1000000 in an array
+  0.080000   0.000000   0.080000 (  0.080519)
+Storing 1000000 nodes in a linked list
+  0.360000   0.010000   0.370000 (  0.372310)
+Accessing the 500000th element of an array
+  0.000000   0.000000   0.000000 (  0.000002)
+Accessing the 500000th element of a linked list
+  0.030000   0.000000   0.030000 (  0.024200)
+Removing 500000th element from array
+  0.030000   0.000000   0.030000 (  0.034965)
+Removing 500000th element from linked list
+  0.040000   0.000000   0.040000 (  0.031412)
+
+I struggled with the benchmarking because I was not certain how I was supposed to do storing, searching, and deletion.  I did the benchmarks on arrays and linked lists with 1_000_000 elements instead of 10_000.  I settled on creating an array and a linked list where each element/data value corresponded with its index (I started with 1 for linked lists).
+
+When storing values into the linked list, each node was instantiated, then stored.  Populating the list was nearly 5 times longer than populating the array.
+
+As expected, data retrieval was substantially faster with an array.  Linked lists require a search through the entire list until the node is found while arrays jump directly to the memory location.
+
+Ruby must have a really good delete_at algorithm, because when I used that, deletion from the middle of the array destroyed the same operation in linked lists, with regard to performance.  So I did the deletion using a loop to move the elements and the linked list performance was marginally better.
+
+I left the benchmarking code in linked_list.rb.
+
+Explanation of Choices on linked_list.rb
+
+At first I really wanted a initialization method, but I realized that it was not necessary, because when the initial node was inserted via either add_to_front or add_to_tail, then @head and @tail would be defined there.  Further, until a node was inserted, @head and @tail were undefined in any case so no need to initialize them as nil or undefined.
+
+I followed TDD right from first test to last.  The add_to_tail method anticipates in the first line that the list might be empty when this is called and so conditionally assigns @head to the passed node if @head does not exist.  If the list is not empty, then @tail should exist and we are appending the new node to it, so @tail.next is assigned the new node.  Finally we assign the new node to @tail because this method is appending to the tail.
+
+For the remove_tail method, we anticipate that the tail might be the head and check if @head.next exists.  If not we set @head and @tail to nil, essentially erasing the list (this is kind of mind boggling, because the node still exists, but the list no longer refers to it).  We could have an erase_list method that simply did that.
+
+At first I was a little flummoxed with what to do next because there is no reference in a node to its predecessor, which I find strange.  It seems an easy thing to fix and would save some processing on searches to the tail.  I knew of no other way to ascertain @tail's predecessor except to iterate through the list until I found the node whose successor was the tail.  I did this by assigning @head to a temp variable, then checking temp's immediate successor for a non-nil value in its next property.  When I found this, temp was the immediaate predecessor to the @tail, so I assing its next property to nil, cutting off the previous tail from the list.  I then assign temp to @tail, redefining the tail of the list.
+
+For the print method I iterated through the list, using puts to print out each node's data value. I chose this method based on the tests.
+
+The delete method was the most challenging.  I checked if @head was the node passed and reassigned @head.next to @head if so, cutting off the head.  If not, then I iterated through the list with a temp variable.  While temp.next existed, I checked temp.next to see if it was the node to delete.  If it was and it was the tail, I assigned @tail = temp.  Then I assigned temp.next = temp.next.next, which just made temp's next property point to what its successor had been pointing to.
+
+Adding to front was easy as we just need to assign the node to be added's next value to the previous @head, if one existed, then also assign the node as @head and @tail if it was the only node.
+
+Finally, to remove the front we just reassign @head to be @head's successor: @head.next.
