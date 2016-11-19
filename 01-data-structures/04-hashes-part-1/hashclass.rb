@@ -1,3 +1,5 @@
+require "./hash_item.rb"
+
 class HashClass
 
   def initialize(size)
@@ -6,6 +8,7 @@ class HashClass
 
   def []=(key, value)
     item = @items[index(key,size)]
+    resize if item && item.value != value
     return if item && item.value == value
     while(item != nil && item.value != value && item.key != key)
       resize if item && item.value != value
@@ -15,7 +18,8 @@ class HashClass
   end
 
   def [](key)
-    value = @items[index(key,size)].value
+    item = @items[index(key,size)]
+    value = item.value if item
     value ? value : nil
   end
 
@@ -32,19 +36,11 @@ class HashClass
   # We are hashing based on strings, let's use the ascii value of each string as
   # a starting point.
   def index(key, size)
-    hash_function(key) % size
+    key.sum % size
   end
 
   # Simple method to return the number of items in the hash
   def size
     @items.size
-  end
-
-  def hash_function(key)
-    h = 0
-    (0...key.length).each do |x|
-      h = 33 * (h ^ key[x].sum )
-    end
-    h
   end
 end
