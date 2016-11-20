@@ -10,7 +10,7 @@ class SeparateChaining
   end
 
   def []=(key, value)
-    i = index(key, size)
+    i = index(key, @items.size)
     n = Node.new(key, value)
 
     # COLLISION!
@@ -27,7 +27,7 @@ class SeparateChaining
   end
 
   def [](key)
-    list = @items.at(index(key,size))
+    list = @items.at(index(key, @items.size))
     if list != nil
       curr = list.head
       while curr != nil
@@ -43,12 +43,22 @@ class SeparateChaining
   # We are hashing based on strings, let's use the ascii value of each string as
   # a starting point.
   def index(key, size)
-    key.sum % size
+    sum = 0
+
+    key.split("").each do |char|
+      if char.ord == 0
+        next
+      end
+
+      sum = sum + char.ord
+    end
+
+    sum % size
   end
 
   # Calculate the current load factor
   def load_factor
-    @item_count / size.to_f
+    @item_count / self.size.to_f
   end
 
   # Simple method to return the number of items in the hash
@@ -60,18 +70,17 @@ class SeparateChaining
   def resize
     new_size = size*2
     new_items = Array.new(new_size)
-    (0...size).each do |i|
+    (0..@items.size-1).each do |i|
       list = @items[i]
       if list != nil
         curr = list.head
+        # We only need to compute the new index once
         new_index = index(curr.key, new_items.size)
-        while curr
-          temp = curr.next
-          !new_items[new_index] ? list = LinkedList.new : list = new_items[new_index]
+        while curr != nil
+          list = LinkedList.new
           list.add_to_tail(curr)
           new_items[new_index] = list
-          curr = temp
-          new_index = index(curr.key, new_items.size) if curr
+          curr = curr.next
         end
       end
     end
@@ -96,16 +105,4 @@ class SeparateChaining
     puts "Load factor is #{load_factor}"
   end
 end
-
-#hobbiton = SeparateChaining.new(1)
-#hobbiton["Bilbo"] = "Baggins"
-#hobbiton["Frodo"] = "Baggins"
-#hobbiton.print
-#
-#puts ""
-#puts "The hash contains the Frodo/Baggins key/value pair: #{hobbiton["Frodo"] != nil}"
-#hobbiton["Sam"] = "Gamgee"
-#hobbiton["Pippin"] = "Took"
-#hobbiton["Merry"] = "Brandybuck"
-#hobbiton.print
-#puts ""
+ 

@@ -10,6 +10,7 @@ class LinkedList
     @head ||= node
     @tail.next = node if @tail
     @tail = node
+    @tail.next = nil
   end
 
   # This method removes the last node in the lists and must keep the rest of the list intact.
