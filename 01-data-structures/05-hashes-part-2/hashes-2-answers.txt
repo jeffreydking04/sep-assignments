@@ -1,0 +1,142 @@
+So the separate chaining code was already written at the sep-assignments repository, but I did some refactoring.  I copied over my linked_list.rb and the specs passed.  However, I noticed that the resize would not function correctly as written in the case where a node was not the first to be placed in a bucket during the resize.  The code was declaring a new linked list for each node that needed to be moved from the old array into the new, then adding the node to the new list, then assigning the list to the new array at the correct index.  But if a node had already been reassigned to that index,then a list would have already been created and it would be overwritten.
+
+I wrote the code for the open addressing, but one of the problems I ran into was similar to the problem I addressed above.  When resizing, the new_items array must check to see if a node is already extant at an index during resize.  So I want to keep my code dry by reusing next_open_index, but with the new_items array.  My thought was to add a parameter to next_open_index so that the array you want to check could be passed in, but the testing suite calls next_open_index and I did not want to rewrite the given tests, so I just rewrote the resize array to deal with it.  I used Linear Probing.
+
+I discovered something really interesting when I wrote the print function for the separate chains hash.  One, I realized just how wrong the provided solution is for separate chains.  That resize method simply does not work (unless there is something different about the linked list class, but I do not see how that class would make this logic work).  Two, it is really difficult to fix it unless you understand something fundamental about nodes and linked lists.
+
+I wrote the print function and everything looked great.  I used hobbit names as my keys and values, but I was surprised when 3 of the hobbits were all chained in one index.  I had a sneaking suspicion that that result was improbable.  So I checked the mods individually and discovered that sure enough, Frodo was not in the right index.  On resize from 2 to 4, he should have been moved to index 2 and should have stayed there on resize to 8, but he was still stuck in index 0 with Bilbo and Pippin.
+
+What was happening?  
+
+This: I was iterating through the list and getting the next node, but I was not calling index with the new node's key value and the new_items size.  So for each index, I was cycling through the nodes in the chain and just adding them back onto the chain, because I was not getting the new index for each node with regard to the new_items size.
+
+So I added the line to get a new index and suddenly I was stuck in an infinite loop, but only after I resized to 8, which was weird because Frodo should have moved at resize to 4.  It took me hours to figure out what was going on.  My linked list class had a flaw that I see no way I could have antipated, but now seems obvious.  When adding to the tail, I was not stipulating that the node added had a next value of nil.  In short, I did not anticipate the reuse of nodes.  If a node had been in a list and its next value changed, it needed to be reset to nil when it was added to the end of a list.
+
+Thus I was adding Bilbo back to the 0 index when I resized to 4, but Bilbo's next value still referenced the Frodo node, so Frodo tagged along with Bilbo when I added Bilbo to the new_items array.  Then I reinserted Frodo at his proper spot in index 2.  No problem except I have that tag along copy of Frodo in the 0 bucket.  So when I resized to 8.  Bilbo got stuck back in index 0, like he was supposed to, but then the loop checked the tagalong Frodo that was chained to Bilbo and it stuck that Frodo into index 2 of the array with size 8.  Then the resize that was checking the array of size 4 moved down to its index 2 and found the copy of Frodo there, where it rightfully belonged.
+
+Yeah, but so it then stuck Frodo onto the copy of Frodo that had already been placed at index 2, but the linked list class rightfully changes the previous tail's next attribute to the added node when you add a tail.  Well, I was adding Frodo to Frodo, so Frodo's next value was set to Frodo:
+
+Voila: infinite loop.  The resize then checked the next value of Frodo and found Frodo and it was content to do that forever.
+
+So I fixed the linked list so that when a tail was added, it made sure that its next value was nil, which protected against adding Frodo to Frodo.  I realized also that a linked list node could be referenced only once, because if you tried to put it twice into one list or into two lists, unless it was the tail, then its next value could not be two different nodes, because it is one instance and when you change its next value you change it where ever it is referenced, so it cannot exist twice in lists.
+
+But after I fixed linked list class, Frodo then disappeared from my hash after the resize to 4, but that was because when I added Bilbo to the new_items array, the linked list class rightfully recognized that he was the head and the tail of that list and set his next value to nil.  Then when the loop called for Bilbo's next value, instead of Frodo, it got nil so it exited the loop without inserting Frodo into the new_items array.
+
+The fix, of course, was to store Bilbo's next value in a temporary variable before he was reinserted into the new array, then setting the current node to the temporary value after Bilbo was replaced.  Bingo.
+
+Really, really neat stuff.
+
+Here is the code for initializing the hash:
+
+hobbiton = SeparateChaining.new(1)
+hobbiton["Bilbo"] = "Baggins"
+hobbiton["Frodo"] = "Baggins"
+hobbiton["Sam"] = "Gamgee"
+hobbiton["Pippin"] = "Took"
+hobbiton["Merry"] = "Brandybuck"
+hobbiton.print
+
+Here is the output from my print function:
+
+Underlying array has size: 8
+
+Array index: 0
+Key: Bilbo
+Value: Baggins
+Key: Pippin
+Value: Took
+
+Array index: 1
+Key: Sam
+Value: Gamgee
+
+Array index: 2
+Key: Frodo
+Value: Baggins
+
+Array index: 3
+Enpty
+
+Array index: 4
+Enpty
+
+Array index: 5
+Enpty
+
+Array index: 6
+Enpty
+
+Array index: 7
+Key: Merry
+Value: Brandybuck
+Load factor is 0.625
+
+And just to corroborate my assertion that the resize method in the original sep-assignments' repository does not work, I inserted the print method into that code and ran the following with my code and the original:
+
+      hobbiton = SeparateChaining.new(1)
+      hobbiton["Bilbo"] = "Baggins"
+      hobbiton["Frodo"] = "Baggins"
+      hobbiton.print
+      puts ""
+      puts "The hash contains the Frodo/Baggins key/value pair: #{hobbiton["Frodo"] != nil}"
+
+The output with my resize method:
+
+      -> ruby separate_chaining.rb
+      Underlying array has size: 4
+
+      Array index: 0
+      Key: Bilbo
+      Value: Baggins
+
+      Array index: 1
+      Enpty
+
+      Array index: 2
+      Key: Frodo
+      Value: Baggins
+
+      Array index: 3
+      Enpty
+      Load factor is 0.5
+
+      The hash contains the Frodo/Baggins key/value pair: true
+
+The output with the original code:
+
+      -> ruby original_sc.rb
+      Underlying array has size: 4
+
+      Array index: 0
+      Key: Bilbo
+      Value: Baggins
+
+      Array index: 1
+      Enpty
+
+      Array index: 2
+      Enpty
+
+      Array index: 3
+      Enpty
+      Load factor is 0.5
+
+      The hash contains the Frodo/Baggins key/value pair: false
+
+My point here is not to be difficult but rather to draw attention to the fact that the SEP material has a solution that does not work.  It passes specs but that is because the resize test does not test what happens when two items are chained together.  I rewrote that test so that two key/value pairs would be chained together in the original 6 element array, then forced the resize and it fails (I have included the original code with my print function in original_sc.rb;  I also copied the test file to separate_chaining_original_spec.rb and changed the resize test to add two elements with the same index, which produces a failure on resize; my code passes both suites).  Further, the proposed solution specifically comments that we do not need to get the index more than once, which I believe to be false.  Every node in the array must be reindexed on a resize, unless I missing something fundamental.
+
+And now for the written assignment:
+
+3.  Hopscotch hashing is neat stuff:  A number is chosen in advance to be H.  Apparently 32 is common.  If no collision occurs, the element is placed at its index.  If one does occur, a linear probe is used to find the next empty bucket.  If it is with H-1 of the original bucket, the item is inserted there.  If it is not within H-1, a search for an element in between the original bucket and the empty bucket is conducted with goal of finding one that can be relocated to the empty bucket and still remain H-1 from its hash code index.  Repeat until there is an empty slot for the element to be placed within H-1 of the original bucket.  Resize and rehash if this is not possible.
+
+Two choice hashing employs two hashing algorithms that should have no correlation, two indices are ascertained for a key, then the element is placed into the table(only one table is used) location that has the least amount of resistance.  By resistance I mean that if the algorithm is using buckets, then the element would be placed in the bucket with the fewest elements, with a default of hashing function 1 if they are equal.  If some other collision resolution scheme is used, then I assume the choice would be to place the element at the slot that required the least amount of steps in a search.
+
+Robin Hood hashing uses a hashing function to determine probe step value in an open address resolution strategy.  The key is sent through the hashing function and the index is calculated.  If the slot is open, insert.  If it is not, use the second hashing function to determine step, then jump to the next slot, keeping track of the number of jumps.  If an open slot is found, insert.  If a key is found that is fewer probes from its hash code index, kick it out, insert, then continue with the ejected element and its step value.   Rinse and repeat until an empty slot is found.  There obvioulsy must be controls to ascertain if the insertion is impractical or impossible; at which point, resize and rehash.
+
+As for my own idea, I like the idea of combining separate chaining with a capped open slot resolution.  Also, I think it is a good idea use different resolution strategies dependent on array size.  Open addressing apparently works well with small array sizes, so why not use it when the hashes have few elements, then switch to a more performant method for middling and large hashes.
+
+My idea is to ascertain a key's index, then chain as long as the chain is fewer than x nodes long.  For the sake of this explanation, let us say we chose 5 as x.  So if the index of the element has fewer than 5 nodes in its chain, it is added to that chain.  If not, it goes to the next bucket if that bucket has fewer than 5.  And so on, except that the number of probes is capped, let us say by 5 again.  So that if there is not an opening in the original bucket or the next 4, then the array is resized and rehashed.
+
+My probability skills are little rusty and this is a difficult problem to quantify anyway, but I am guessing that with a sufficient x, load factors could reach very high levels (arbitrarily high as the expense will be how many cache misses are you willing to live with on average, but searches and insertion are both constant (because they are capped)).  So say we set our caps to 10 deep and 10 wide, then, with a well distributed hashing function, I am guessing that the average load factor would exceed 50 (which is massive), but worst case insertion and search steps is 100*(the number of steps required to search or insert) (a constant).  Resizing would be kept to as relatively low as you wanted; higher caps means less resizing.  I am sure optimization could be ascertained for a given application.
+
+The trade off is of course that the chaining increases the likelihood of cache misses and RAM searches.  But the huge load factors would mitigate the cache misses in the right applications.
