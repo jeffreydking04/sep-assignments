@@ -1,0 +1,175 @@
+I wrote 5 different tree and heap helper classes.  The first two, binary_search_tree.rb and min_binary_heap.rb, were custom helpers that insert and sort based on rating, but search based on movie title.  I wrote a generic version of both that inserts, sorts, and searches based on one data value.  I also wrote a min binary heap helper class that uses array representation.  The last 3 could be used with custom classes in which <, <=, >=, and > were overridden so that the data object had clear rules of comparison.  Of course they can be used with numbers or strings as the data objects without modification as those types already have well defined comparison operators.
+
+The only classes which do not have extensive documentation is the original BinarySearchTree class and the array representation.  For questions regarding my choices, see the files.  Particularly, my thinking and code became more lucid in the generic classes because I had already defined the issues fairly well while writing the custom classes.
+
+I wrote two different printf methods (one using FIFO and recursion, the other using FIFO without recursion that I feel is much cleaner) as well as a_different_print method that displays the row and slot each item is in.
+
+Here are the printouts of a few movies with scores, per the assignment:
+
+Binary Search Tree:
+
+  Pulp Fiction: 95
+  Gladiator: 94
+  Out of Africa: 96
+  Chariots's of Fire: 92
+  Rosenkrantz and Gildenstern Are Dead: 98
+  Jiro Dreams of Sushi: 88
+  Serenity: 93
+  Daredevil: 97
+  The Big Lebowski: 99
+  Thor: 86
+  Dumb and Dumber: 91
+  Big Trouble in Little China: 100
+  Jessica Jones: 85
+  Bull Durham: 87
+  Fargo: 89
+  Blade Runner: 90
+
+  Row: 1; Slot: 1; Title: Pulp Fiction; Rating: 95
+
+  Row: 2; Slot: 2; Title: Gladiator; Rating: 94
+  Row: 2; Slot: 3; Title: Out of Africa; Rating: 96
+
+  Row: 3; Slot: 4; Title: Chariots's of Fire; Rating: 92
+  Row: 3: Slot: 5: Empty
+  Row: 3: Slot: 6: Empty
+  Row: 3; Slot: 7; Title: Rosenkrantz and Gildenstern Are Dead; Rating: 98
+
+  Row: 4; Slot: 8; Title: Jiro Dreams of Sushi; Rating: 88
+  Row: 4; Slot: 9; Title: Serenity; Rating: 93
+  Row: 4: Slot: 10: Empty
+  Row: 4: Slot: 11: Empty
+  Row: 4: Slot: 12: Empty
+  Row: 4: Slot: 13: Empty
+  Row: 4; Slot: 14; Title: Daredevil; Rating: 97
+  Row: 4; Slot: 15; Title: The Big Lebowski; Rating: 99
+
+  Row: 5; Slot: 16; Title: Thor; Rating: 86
+  Row: 5; Slot: 17; Title: Dumb and Dumber; Rating: 91
+  Row: 5: Slot: 18: Empty
+  Row: 5: Slot: 19: Empty
+  Row: 5: Slot: 20: Empty
+  Row: 5: Slot: 21: Empty
+  Row: 5: Slot: 22: Empty
+  Row: 5: Slot: 23: Empty
+  Row: 5: Slot: 24: Empty
+  Row: 5: Slot: 25: Empty
+  Row: 5: Slot: 26: Empty
+  Row: 5: Slot: 27: Empty
+  Row: 5: Slot: 28: Empty
+  Row: 5: Slot: 29: Empty
+  Row: 5: Slot: 30: Empty
+  Row: 5; Slot: 31; Title: Big Trouble in Little China; Rating: 100
+
+  Row: 6; Slot: 32; Title: Jessica Jones; Rating: 85
+  Row: 6; Slot: 33; Title: Bull Durham; Rating: 87
+  Row: 6; Slot: 34; Title: Fargo; Rating: 89
+  Row: 6: Slot: 35: Empty
+  Row: 6: Slot: 36: Empty
+  Row: 6: Slot: 37: Empty
+  Row: 6: Slot: 38: Empty
+  Row: 6: Slot: 39: Empty
+  Row: 6: Slot: 40: Empty
+  Row: 6: Slot: 41: Empty
+  Row: 6: Slot: 42: Empty
+  Row: 6: Slot: 43: Empty
+  Row: 6: Slot: 44: Empty
+  Row: 6: Slot: 45: Empty
+  Row: 6: Slot: 46: Empty
+  Row: 6: Slot: 47: Empty
+  Row: 6: Slot: 48: Empty
+  Row: 6: Slot: 49: Empty
+  Row: 6: Slot: 50: Empty
+  Row: 6: Slot: 51: Empty
+  Row: 6: Slot: 52: Empty
+  Row: 6: Slot: 53: Empty
+  Row: 6: Slot: 54: Empty
+  Row: 6: Slot: 55: Empty
+  Row: 6: Slot: 56: Empty
+  Row: 6: Slot: 57: Empty
+  Row: 6: Slot: 58: Empty
+  Row: 6: Slot: 59: Empty
+  Row: 6: Slot: 60: Empty
+  Row: 6: Slot: 61: Empty
+  Row: 6: Slot: 62: Empty
+  Row: 6: Slot: 63: Empty
+
+  Row: 7: Slot: 64: Empty
+  Row: 7: Slot: 65: Empty
+  Row: 7: Slot: 66: Empty
+  Row: 7: Slot: 67: Empty
+  Row: 7: Slot: 68: Empty
+  Row: 7; Slot: 69; Title: Blade Runner; Rating: 90
+
+As can be seen, the second print method, though much longer because it lists empty slots, presents a clearer picture of the true struture of the tree and actually makes it possible to ascertain that the tree is valid (it is).
+
+Min Binary Heap:
+
+  Jessica Jones: 85
+  Thor: 86
+  Bull Durham: 87
+  Fargo: 89
+  Dumb and Dumber: 91
+  Chariots's of Fire: 92
+  Jiro Dreams of Sushi: 88
+  Gladiator: 94
+  Daredevil: 97
+  The Big Lebowski: 99
+  Pulp Fiction: 95
+  Out of Africa: 96
+  Big Trouble in Little China: 100
+  Serenity: 93
+  Blade Runner: 90
+  Rosenkrantz and Gildenstern Are Dead: 98
+
+  Row: 1; Slot: 1; Title: Jessica Jones; Rating: 85
+
+  Row: 2; Slot: 2; Title: Thor; Rating: 86
+  Row: 2; Slot: 3; Title: Bull Durham; Rating: 87
+
+  Row: 3; Slot: 4; Title: Fargo; Rating: 89
+  Row: 3; Slot: 5; Title: Dumb and Dumber; Rating: 91
+  Row: 3; Slot: 6; Title: Chariots's of Fire; Rating: 92
+  Row: 3; Slot: 7; Title: Jiro Dreams of Sushi; Rating: 88
+
+  Row: 4; Slot: 8; Title: Gladiator; Rating: 94
+  Row: 4; Slot: 9; Title: Daredevil; Rating: 97
+  Row: 4; Slot: 10; Title: The Big Lebowski; Rating: 99
+  Row: 4; Slot: 11; Title: Pulp Fiction; Rating: 95
+  Row: 4; Slot: 12; Title: Out of Africa; Rating: 96
+  Row: 4; Slot: 13; Title: Big Trouble in Little China; Rating: 100
+  Row: 4; Slot: 14; Title: Serenity; Rating: 93
+  Row: 4; Slot: 15; Title: Blade Runner; Rating: 90
+
+  Row: 5; Slot: 16; Title: Rosenkrantz and Gildenstern Are Dead; Rating: 98
+
+
+Although it could be ascertained that this was a valid min heap with the first output, the second makes it even easier to see.
+
+I did not write tests for the generic helper classes.  Here are the benchmarks:
+
+Generic MinBinaryHeap class benchmarks:
+
+  Heap: inserts 100000 nodes:   0.580000   0.000000   0.580000 (  0.583239)
+  Heap: finds a random node:   0.030000   0.000000   0.030000 (  0.030653)
+  Heap: deletes a random node   0.020000   0.000000   0.020000 (  0.013492)
+
+Generic BinarySearchTree class benchmarks:
+
+  Tree: inserts 100000 nodes:   0.370000   0.000000   0.370000 (  0.368479)
+  Tree: finds a random node:   0.000000   0.000000   0.000000 (  0.000014)
+  Tree: deletes a random node   0.000000   0.000000   0.000000 (  0.000020)
+
+Given the way we implement this, the heap confers no advantage on a tree.
+
+But when we implement a MinBinaryHeap using an array:
+
+  Heap: inserts 100000 nodes:   0.090000   0.000000   0.090000 (  0.087970)
+  Heap: finds a random node:   0.010000   0.000000   0.010000 (  0.008467)
+  Heap: deletes a random node   0.020000   0.000000   0.020000 (  0.013463)
+
+Insertion with a Binaray Search Tree takes roughly 4.19 times as long as insertion with an Min Heap using array representation, even with the bubbling up to keep it a valid min heap.  But Binary Search Trees are massively faster when searching or deleting.
+
+It is tempting to ask why one would want to use a heap at all because a simple push onto an array is an even faster insertion method and offers the same O(n) search times (for a random item) that a heap does.  However, a heap is not completely unsorted and if one needed to quickly insert lots of incoming data, but pseudo-sort it according to priority, then a heap becomes very efficient, because search times for highest priority items should be even quicker than Binary Search Trees and insertion is much faster.
+
+Binary Search Trees are great for large amounts of data that you have the time to sort, but need to retrieve quickly.  Even the sorting is not that much of an issue.  Heaps are just much faster on insertion but have fewer practical applications.

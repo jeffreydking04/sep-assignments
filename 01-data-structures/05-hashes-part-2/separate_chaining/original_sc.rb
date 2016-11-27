@@ -105,4 +105,17 @@ class SeparateChaining
     puts "Load factor is #{load_factor}"
   end
 end
+
+hobbiton = SeparateChaining.new(1)
+hobbiton["Bilbo"] = "Baggins"
+hobbiton["Frodo"] = "Baggins"
+hobbiton.print
+#
+#puts ""
+#puts "The hash contains the Frodo/Baggins key/value pair: #{hobbiton["Frodo"] != nil}"
+#hobbiton["Sam"] = "Gamgee"
+#hobbiton["Pippin"] = "Took"
+#hobbiton["Merry"] = "Brandybuck"
+#hobbiton.print
+#puts ""
  
